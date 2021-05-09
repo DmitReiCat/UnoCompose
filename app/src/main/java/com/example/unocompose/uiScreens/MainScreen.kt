@@ -3,21 +3,22 @@ package com.example.unocompose.uiScreens
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.input.key.Key.Companion.D
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -28,9 +29,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
 import com.example.unocompose.R
-import com.example.unocompose.theme.*
+import com.example.unocompose.Components.*
+import com.example.unocompose.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
@@ -66,10 +68,13 @@ fun MainScreen(
                 }
             }
 
-            NameField(hint = "Enter your name") {
+            Row() {
+                NameField(hint = "Enter your name") {
+                }
 
             }
-            Spacer(modifier = Modifier.size(padding))
+
+
             ConstraintLayout(constraints, modifier = Modifier
                 .fillMaxSize()
                 /*.background(cardWhite)*/) {
@@ -98,14 +103,12 @@ fun NameField(hint: String, onConfirm: (String) -> Unit = {}) {
     var text by remember { mutableStateOf("") }
     var isHintDisplayed by remember { mutableStateOf(hint != "") }
     Box(modifier = Modifier) {
-        SideEffect {
-            userName = text
-            Log.d("name", userName)
-        }
         BasicTextField(
             value = text,
             onValueChange = {
                 text = it
+                userName = it
+                Log.d("Name", userName)
             },
             maxLines = 1,
             singleLine = true,
@@ -155,19 +158,41 @@ fun UserMenu(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MyButton(
+        NavButton(
             navController = navController,
             text = "Create",
-            isMainButton = true
+            isMainButton = true,
+            onClickDestination = "createLobbyScreen"
         )
         Spacer(modifier = Modifier.padding(padding))
-        MyButton(
+        NavButton(
             navController = navController,
             text = "Find",
-            isMainButton = false
+            isMainButton = false,
+            onClickDestination = "createLobbyScreen"
         )
 
     }
 }
-
+//fun ConfirmButton(text: String) {
+//    val textStyle = Typography.h2
+//
+//    val boxColor = if (isMainButton) cardRed
+//    else cardBlue
+//
+//    Box(
+//        contentAlignment = Alignment.Center,
+//        modifier = Modifier
+//            .clip(RoundedCornerShape(20.dp))
+//            .background(boxColor)
+//            .wrapContentHeight()
+//            .clickable {  }
+//    ) {
+//        Text(
+//            text = text,
+//            style = textStyle,
+//            modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+//        )
+//    }
+//}
 

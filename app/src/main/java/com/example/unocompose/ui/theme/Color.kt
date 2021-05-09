@@ -2,7 +2,13 @@ package com.example.unocompose.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val textWhite = Color(0xFFFFFFFF)
+
+val cardGreen = Color(0xFF00796B)
+val cardRed = Color(0xFFC2185B)
+val cardBlue = Color(0xFF0288D1)
+val cardOrange = Color(0xFFE64A19)
+val cardBlack = Color(0xFF323232)
+
+val bgPrimary = Color(0xFF512DA8)
+val bgSecondary = Color(0xFF7B1FA2)
