@@ -1,12 +1,10 @@
-package com.example.unocompose.uiScreens
+package com.example.unocompose.screens
 
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,11 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.D
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -29,9 +25,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import com.example.unocompose.R
-import com.example.unocompose.Components.*
+import com.example.unocompose.сomponents.*
 import com.example.unocompose.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -67,17 +62,13 @@ fun MainScreen(
                     width = Dimension.fillToConstraints
                 }
             }
-
-            Row() {
-                NameField(hint = "Enter your name") {
-                }
-
-            }
-
+            NameField(hint = "Enter your name")
 
             ConstraintLayout(constraints, modifier = Modifier
                 .fillMaxSize()
                 /*.background(cardWhite)*/) {
+
+                /*Logo*/
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -86,6 +77,8 @@ fun MainScreen(
                 ) { 
                     LogoUno()
                 }
+
+                /*User Menu*/
                 Box(modifier = Modifier
                     .layoutId("userMenu")
                     /*.background(cardGreen)*/
@@ -99,7 +92,9 @@ fun MainScreen(
 
 
 @Composable
-fun NameField(hint: String, onConfirm: (String) -> Unit = {}) {
+fun NameField(
+    hint: String,
+) {
     var text by remember { mutableStateOf("") }
     var isHintDisplayed by remember { mutableStateOf(hint != "") }
     Box(modifier = Modifier) {
