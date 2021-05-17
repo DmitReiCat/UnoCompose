@@ -1,5 +1,8 @@
 package com.example.unocompose.screens
 
+import android.app.Application
+import android.content.Context
+import android.net.nsd.NsdManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,19 +21,25 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
+import com.example.unocompose.models.NSDHost
 import com.example.unocompose.сomponents.NavButton
 import com.example.unocompose.ui.theme.*
+import com.example.unocompose.viewmodels.LobbyScreenViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 //TODO()
-val playerList = mutableStateOf<List<String>>(mutableListOf("Amy", "Lily"))
+val playerList = mutableStateOf<List<String>>(listOf("Amy", "Lily"))
 //TODO()
 
 @Composable
 fun LobbyScreen(
     navController: NavController,
-    isHost: Boolean
+    isHost: Boolean,
+    nsdManager: NsdManager
 ) {
     Surface(
         color = cardBlack,
@@ -97,14 +106,21 @@ fun LobbyScreen(
                         text = "Start",
                         isMainButton = true,
                         onClickDestination = "gameScreen")
-                    Button(onClick = { playerList.value += "Mark"}) {
-
-                    }
+                    buttonToRegister(nsdManager = nsdManager)
                 }
             }
         }
     }
 }
+
+@Composable
+fun buttonToRegister(
+    nsdManager: NsdManager,
+) {
+    Button(onClick = { LobbyScreenViewModel(nsdManager = nsdManager).openOnNetwork() }) {
+    }
+}
+
 
 @Composable
 fun UserEntry(name: String) {

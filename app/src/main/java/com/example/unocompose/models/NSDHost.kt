@@ -6,14 +6,17 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.ServerSocket
 import java.net.Socket
 import java.util.concurrent.atomic.AtomicBoolean
-
+import javax.inject.Inject
+import javax.inject.Named
 class NSDHost(
-    application: Application
+    private var nsdManager: NsdManager
 ) {
 
     init {
@@ -23,10 +26,9 @@ class NSDHost(
     lateinit var serverSocket: ServerSocket
     var mLocalPort = 0
     var mServiceName = ""
-    var nsdManager = application.applicationContext.getSystemService(Context.NSD_SERVICE) as NsdManager
-    val stopWord = AtomicBoolean(true)
 
-    val registrationListener = object : NsdManager.RegistrationListener {
+
+    private val registrationListener = object : NsdManager.RegistrationListener {
         override fun onServiceRegistered(NsdServiceInfo: NsdServiceInfo) {
             // Save the service name. Android may have changed it in order to
             // resolve a conflict, so update the name you initially requested
@@ -34,19 +36,19 @@ class NSDHost(
             mServiceName = NsdServiceInfo.serviceName
             Log.d(TAGNSD, "Service registered!, ${NsdServiceInfo.serviceName}, ${NsdServiceInfo.serviceType}")
 
-            GlobalScope.launch {
-                while (stopWord.get()) {
-                    Log.d(TAG, "Strat listening on $serverSocket")
-                    val clientSocket = serverSocket.accept()
-                    GlobalScope.launch {
-                        clientSocket.getInputStream().bufferedReader().use {
-                            val message = it.readLine()
-                            Log.d(TAGNSD, message)
-
-                        }
-                    }
-                }
-            }
+//            GlobalScope.launch {
+//                while (stopWord.get()) {
+//                    Log.d(TAG, "Strat listening on $serverSocket")
+//                    val clientSocket = serverSocket.accept()
+//                    GlobalScope.launch {
+//                        clientSocket.getInputStream().bufferedReader().use {
+//                            val message = it.readLine()
+//                            Log.d(TAGNSD, message)
+//
+//                        }
+//                    }
+//                }
+//            }
         }
 
         override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
@@ -59,12 +61,12 @@ class NSDHost(
             Log.d(TAGNSD, "Registration successful!")
         }
         override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-            // Unregistration failed. Put debugging code here to determine why.
-            Log.d(TAGNSD, "Unegistration failed!")
+            // Unregister failed. Put debugging code here to determine why.
+            Log.d(TAGNSD, "Unregister failed!")
         }
     }
 
-    fun initializeServerSocket() {
+    private fun initializeServerSocket() {
         // Initialize a server socket on the next available port.
         serverSocket = ServerSocket(0).also { socket ->
             // Store the chosen port.
@@ -72,25 +74,25 @@ class NSDHost(
         }
     }
 
-    fun registerService(port: Int) {
+    fun registerService() {
         // Create the NsdServiceInfo object, and populate it.
         val serviceInfo = NsdServiceInfo().apply {
             // The name is subject to change based on conflicts
             // with other services advertised on the same network.
             serviceName = "NsdChat1"
             serviceType = "_nsdchat._tcp"
-            setPort(port)
+            port = mLocalPort
             Log.d(TAGNSD, "info created")
         }
         nsdManager.apply {
             registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
         }
-        Log.d(TAGNSD, "Begining registration")
+        Log.d(TAGNSD, "Beginning registration")
     }
 
 
 
-    val serviceType = "_nsdchat._tcp"
+//    val serviceType = "_nsdchat._tcp"
 
 
 

@@ -1,5 +1,6 @@
 package com.example.unocompose.screens
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,7 +37,8 @@ var userName = ""
 
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    context: Context
 ) {
     val systemUiController = rememberSystemUiController()
 

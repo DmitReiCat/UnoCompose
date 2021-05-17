@@ -6,13 +6,14 @@ import android.net.nsd.NsdServiceInfo
 import android.util.Log
 import java.net.InetAddress
 import java.net.Socket
+import javax.inject.Inject
+import javax.inject.Named
 
 class NSDClient(
-    context: Context,
+    private val nsdManager: NsdManager,
     private val onUpdate : (ScanResult) -> Unit
 ) {
 
-    var nsdManager = context.getSystemService(Context.NSD_SERVICE) as NsdManager
 
     inner class NsdResolveListener : NsdManager.ResolveListener {
         override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
@@ -23,15 +24,15 @@ class NSDClient(
             Log.e(TAG, "Resolve Succeeded. $serviceInfo")
             onUpdate(ScanResult(serviceInfo.host, serviceInfo.serviceName))
 
-            val port: Int = serviceInfo.port
-            val host: InetAddress = serviceInfo.host
-            Log.d(TAG, "Creatinng socket")
-            val socket = Socket(host, port)
-            Log.d(TAG, "Created socket $socket")
-            socket.getOutputStream().bufferedWriter().use {
-                it.append("Hello")
-                it.newLine()
-            }
+//            val port: Int = serviceInfo.port
+//            val host: InetAddress = serviceInfo.host
+//            Log.d(TAG, "Creatinng socket")
+//            val socket = Socket(host, port)
+//            Log.d(TAG, "Created socket $socket")
+//            socket.getOutputStream().bufferedWriter().use {
+//                it.append("Hello")
+//                it.newLine()
+//            }
         }
 //            override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
 //                if (serviceInfo == null) return
