@@ -43,4 +43,3 @@ fun NavButton(navController: NavController, text: String, isMainButton: Boolean,
     }
 }
 
-

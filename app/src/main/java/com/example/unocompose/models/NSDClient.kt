@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.net.InetAddress
 import java.net.Socket
 import javax.inject.Inject
@@ -11,8 +13,15 @@ import javax.inject.Named
 
 class NSDClient(
     private val nsdManager: NsdManager,
-    private val onUpdate : (ScanResult) -> Unit
+//    private val onUpdate : (ScanResult) -> Unit
 ) {
+
+    suspend fun startDiscovery() {
+        GlobalScope.launch {
+            nsdManager.discoverServices("_nsdchat._tcp", NsdManager.PROTOCOL_DNS_SD, NsdListener())
+        }
+
+    }
 
 
     inner class NsdResolveListener : NsdManager.ResolveListener {
@@ -22,8 +31,7 @@ class NSDClient(
         }
         override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
             Log.e(TAG, "Resolve Succeeded. $serviceInfo")
-            onUpdate(ScanResult(serviceInfo.host, serviceInfo.serviceName))
-
+//            onUpdate(ScanResult(serviceInfo.host, serviceInfo.serviceName))
 //            val port: Int = serviceInfo.port
 //            val host: InetAddress = serviceInfo.host
 //            Log.d(TAG, "Creatinng socket")

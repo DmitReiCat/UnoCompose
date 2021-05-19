@@ -32,11 +32,11 @@ import kotlinx.coroutines.launch
 
 
 //TODO()
-val playerList = mutableStateOf<List<String>>(listOf("Amy", "Lily"))
+val lobbyList = mutableStateOf<List<String>>(listOf("Amy", "Lily"))
 //TODO()
 
 @Composable
-fun LobbyScreen(
+fun FindLobbyScreen(
     navController: NavController,
     isHost: Boolean,
     nsdManager: NsdManager
@@ -119,43 +119,9 @@ fun LobbyScreen(
     }
 }
 
-@Composable
-fun ButtonToRegister(
-    nsdManager: NsdManager,
-) {
-    val composableScope = rememberCoroutineScope()
-    Button(
-        onClick = { composableScope.launch {
-            LobbyScreenViewModel(nsdManager = nsdManager).openOnNetwork()
-        } }
-    ) {
-        Text(
-            text = "Register",
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
-        )
-    }
-}
 
 @Composable
-fun ButtonToListen(
-    nsdManager: NsdManager,
-) {
-    val composableScope = rememberCoroutineScope()
-    Button(
-        onClick = { composableScope.launch {
-            LobbyScreenViewModel(nsdManager = nsdManager).findLobby() }
-        }
-    ) {
-        Text(
-            text = "Listen",
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
-        )
-    }
-}
-
-
-@Composable
-fun UserEntry(name: String) {
+fun LobbyEntry(name: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

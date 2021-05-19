@@ -1,20 +1,12 @@
 package com.example.unocompose.models
 
-import android.app.Application
-import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
-import dagger.hilt.EntryPoint
-import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.ServerSocket
-import java.net.Socket
-import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
-import javax.inject.Named
+
 class NSDHost(
     private var nsdManager: NsdManager
 ) {
@@ -24,8 +16,8 @@ class NSDHost(
     }
 
     lateinit var serverSocket: ServerSocket
-    var mLocalPort = 0
-    var mServiceName = ""
+    var localPort = 0
+    var serviceName = ""
 
 
     private val registrationListener = object : NsdManager.RegistrationListener {
@@ -33,8 +25,15 @@ class NSDHost(
             // Save the service name. Android may have changed it in order to
             // resolve a conflict, so update the name you initially requested
             // with the name Android actually used.
-            mServiceName = NsdServiceInfo.serviceName
+            serviceName = NsdServiceInfo.serviceName
             Log.d(TAGNSD, "Service registered!, ${NsdServiceInfo.serviceName}, ${NsdServiceInfo.serviceType}")
+            GlobalScope.launch {
+                Log.d(TAG,"launching coroutine")
+                ServerConnection().createChannels()
+            }
+
+
+
 
 //            GlobalScope.launch {
 //                while (stopWord.get()) {
@@ -70,24 +69,28 @@ class NSDHost(
         // Initialize a server socket on the next available port.
         serverSocket = ServerSocket(0).also { socket ->
             // Store the chosen port.
-            mLocalPort = socket.localPort
+            localPort = socket.localPort
         }
     }
 
-    fun registerService() {
+    suspend fun registerService() {
         // Create the NsdServiceInfo object, and populate it.
         val serviceInfo = NsdServiceInfo().apply {
             // The name is subject to change based on conflicts
             // with other services advertised on the same network.
-            serviceName = "NsdChat1"
+            serviceName = "NsdChat"
             serviceType = "_nsdchat._tcp"
-            port = mLocalPort
+            port = localPort
             Log.d(TAGNSD, "info created")
         }
         nsdManager.apply {
+            Log.d(TAGNSD, "Beginning registration")
             registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
         }
-        Log.d(TAGNSD, "Beginning registration")
+
+
+
+
     }
 
 
