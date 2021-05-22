@@ -1,0 +1,47 @@
+<?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:maxLevel="0" android:drawable="@drawable/cyan_0" />
+    <item android:maxLevel="1" android:drawable="@drawable/cyan_1" />
+    <item android:maxLevel="2" android:drawable="@drawable/cyan_2" />
+    <item android:maxLevel="3" android:drawable="@drawable/cyan_3" />
+    <item android:maxLevel="4" android:drawable="@drawable/cyan_4" />
+    <item android:maxLevel="5" android:drawable="@drawable/cyan_5" />
+    <item android:maxLevel="6" android:drawable="@drawable/cyan_6" />
+    <item android:maxLevel="7" android:drawable="@drawable/cyan_7" />
+    <item android:maxLevel="8" android:drawable="@drawable/cyan_8" />
+    <item android:maxLevel="9" android:drawable="@drawable/cyan_9" />
+    <item android:maxLevel="10" android:drawable="@drawable/cyan_plus2" />
+    <item android:maxLevel="11" android:drawable="@drawable/cyan_reverse" />
+    <item android:maxLevel="12" android:drawable="@drawable/cyan_skip" />
+
+    <item android:maxLevel="13" android:drawable="@drawable/orange_0" />
+    <item android:maxLevel="14" android:drawable="@drawable/orange_1" />
+    <item android:maxLevel="15" android:drawable="@drawable/orange_2" />
+    <item android:maxLevel="16" android:drawable="@drawable/orange_3" />
+    <item android:maxLevel="17" android:drawable="@drawable/orange_4" />
+    <item android:maxLevel="18" android:drawable="@drawable/orange_5" />
+    <item android:maxLevel="19" android:drawable="@drawable/orange_6" />
+    <item android:maxLevel="20" android:drawable="@drawable/orange_7" />
+    <item android:maxLevel="21" android:drawable="@drawable/orange_8" />
+    <item android:maxLevel="22" android:drawable="@drawable/orange_9" />
+    <item android:maxLevel="23" android:drawable="@drawable/orange_plus2" />
+    <item android:maxLevel="24" android:drawable="@drawable/orange_reverse" />
+    <item android:maxLevel="25" android:drawable="@drawable/orange_skip" />
+
+    <item android:maxLevel="26" android:drawable="@drawable/pink_0" />
+    <item android:maxLevel="27" android:drawable="@drawable/pink_1" />
+    <item android:maxLevel="28" android:drawable="@drawable/pink_2" />
+    <item android:maxLevel="29" android:drawable="@drawable/pink_3" />
+    <item android:maxLevel="30" android:drawable="@drawable/pink_4" />
+    <item android:maxLevel="31" android:drawable="@drawable/pink_5" />
+    <item android:maxLevel="32" android:drawable="@drawable/pink_6" />
+    <item android:maxLevel="33" android:drawable="@drawable/pink_7" />
+    <item android:maxLevel="34" android:drawable="@drawable/pink_8" />
+    <item android:maxLevel="35" android:drawable="@drawable/pink_9" />
+    <item android:maxLevel="36" android:drawable="@drawable/pink_plus2" />
+    <item android:maxLevel="37" android:drawable="@drawable/pink_reverse" />
+    <item android:maxLevel="38" android:drawable="@drawable/pink_skip" />
+
+
+
+</level-list>
