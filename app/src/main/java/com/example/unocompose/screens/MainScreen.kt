@@ -38,7 +38,6 @@ var userName = ""
 @Composable
 fun MainScreen(
     navController: NavController,
-    context: Context
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -166,7 +165,7 @@ fun UserMenu(navController: NavController) {
             navController = navController,
             text = "Find",
             isMainButton = false,
-            onClickDestination = "createLobbyScreen"
+            onClickDestination = "findLobbyScreen"
         )
 
     }

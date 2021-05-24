@@ -1,7 +1,5 @@
 package com.example.unocompose.screens
 
-import android.app.Application
-import android.content.Context
 import android.net.nsd.NsdManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,18 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
-import com.example.unocompose.models.NSDHost
 import com.example.unocompose.сomponents.NavButton
 import com.example.unocompose.ui.theme.*
 import com.example.unocompose.viewmodels.LobbyScreenViewModel
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 //TODO()
-val playerList = mutableStateOf<List<String>>(listOf("Amy", "Lily"))
+val playerList = mutableStateOf<List<String>>(mutableListOf("Amy", "Lily"))
 //TODO()
 
 @Composable
@@ -109,6 +104,9 @@ fun LobbyScreen(
                             onClickDestination = "gameScreen")
                         ButtonToRegister(nsdManager = nsdManager)
                         ButtonToListen(nsdManager = nsdManager)
+                        Button(onClick = { playerList.value += "hello!" }) {
+                            
+                        }
                     }
 
 
@@ -122,11 +120,12 @@ fun LobbyScreen(
 @Composable
 fun ButtonToRegister(
     nsdManager: NsdManager,
+    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val composableScope = rememberCoroutineScope()
     Button(
         onClick = { composableScope.launch {
-            LobbyScreenViewModel(nsdManager = nsdManager).openOnNetwork()
+            viewModel.openOnNetwork(nsdManager)
         } }
     ) {
         Text(
@@ -139,11 +138,12 @@ fun ButtonToRegister(
 @Composable
 fun ButtonToListen(
     nsdManager: NsdManager,
+    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val composableScope = rememberCoroutineScope()
     Button(
         onClick = { composableScope.launch {
-            LobbyScreenViewModel(nsdManager = nsdManager).findLobby() }
+            viewModel.findLobby(nsdManager) }
         }
     ) {
         Text(

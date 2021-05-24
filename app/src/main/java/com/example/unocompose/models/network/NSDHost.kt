@@ -1,8 +1,10 @@
-package com.example.unocompose.models
+package com.example.unocompose.models.network
 
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
+import com.example.unocompose.models.TAG
+import com.example.unocompose.models.TAGNSD
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.ServerSocket

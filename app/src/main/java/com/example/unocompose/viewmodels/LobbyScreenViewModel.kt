@@ -1,35 +1,30 @@
 package com.example.unocompose.viewmodels
 
-import android.content.Context
 import android.net.nsd.NsdManager
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import com.example.unocompose.models.NSDClient
-import com.example.unocompose.models.NSDHost
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Named
+import com.example.unocompose.models.network.NSDClient
+import com.example.unocompose.models.network.NSDHost
+import com.example.unocompose.models.network.ScanResult
 
-class LobbyScreenViewModel(nsdManager: NsdManager): ViewModel() {
+class LobbyScreenViewModel: ViewModel() {
 
-    private val mNsdManager = nsdManager
 
-    val userList = mutableStateOf<List<String>>(listOf("Amy", "Lily"))
+    val userData = mutableListOf<ScanResult>()
+    val userList = mutableStateOf<List<String>>(listOf())
 
-    suspend fun openOnNetwork() {
-        NSDHost(mNsdManager).registerService()
+    fun updateUserList() {
+        for (data in userData) {
+            userList.value += data.name
+        }
     }
 
-    suspend fun findLobby() {
-        NSDClient(mNsdManager).startDiscovery()
+    suspend fun openOnNetwork(nsdManager: NsdManager) {
+        NSDHost(nsdManager).registerService()
     }
 
-
-
-
+    suspend fun findLobby(nsdManager: NsdManager) {
+        NSDClient(nsdManager){  userData.add(it)  }.startDiscovery()
+        updateUserList()
+    }
 }

@@ -1,6 +1,7 @@
-package com.example.unocompose.models
+package com.example.unocompose.models.network
 
 import android.util.Log
+import com.example.unocompose.models.TAG
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 
@@ -43,27 +44,6 @@ class ServerConnection() {
     }
 
 
-//    suspend fun createChannels() {
-//        val server = ServerSocket(25556)
-//
-//        while (true) {
-//            GlobalScope.launch {
-//                Log.d(TAG, "Strat listening on $server")
-//                val clientSocket = server.accept()
-//                try {
-//                    while (true) {
-//                        clientSocket.getInputStream().bufferedReader().use {
-//                            val message = it.readLine()
-//                            Log.d(TAGNSD, message)
-//                        }
-//                    }
-//                } catch (e: Throwable) {
-//                    e.printStackTrace()
-//                    server.close()
-//                }
-//            }
-//        }
-//    }
 
 }
 

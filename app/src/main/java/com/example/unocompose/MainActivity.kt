@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.unocompose.screens.FindLobbyScreen
 
 import com.example.unocompose.screens.GameScreen
 import com.example.unocompose.screens.LobbyScreen
@@ -47,11 +48,13 @@ import javax.inject.Inject
                  startDestination = "mainScreen"
              ) {
                  composable("mainScreen") {
-                     MainScreen(navController = navController, context = this@MainActivity.applicationContext)
-
+                     MainScreen(navController = navController)
                  }
                  composable("createLobbyScreen") {
                      LobbyScreen(navController = navController, isHost = true, nsdManager = nsdManager)
+                 }
+                 composable("findLobbyScreen") {
+                     FindLobbyScreen(navController = navController, nsdManager = nsdManager)
                  }
                  composable("gameScreen") {
                      GameScreen(navController = navController)

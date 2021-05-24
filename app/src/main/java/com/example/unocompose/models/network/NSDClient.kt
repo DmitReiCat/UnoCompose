@@ -1,19 +1,16 @@
-package com.example.unocompose.models
+package com.example.unocompose.models.network
 
-import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
+import com.example.unocompose.models.TAG
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.InetAddress
-import java.net.Socket
-import javax.inject.Inject
-import javax.inject.Named
 
 class NSDClient(
     private val nsdManager: NsdManager,
-//    private val onUpdate : (ScanResult) -> Unit
+    private val onUpdate : (ScanResult) -> Unit
 ) {
 
     suspend fun startDiscovery() {
@@ -31,7 +28,7 @@ class NSDClient(
         }
         override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
             Log.e(TAG, "Resolve Succeeded. $serviceInfo")
-//            onUpdate(ScanResult(serviceInfo.host, serviceInfo.serviceName))
+            onUpdate(ScanResult(serviceInfo.host, serviceInfo.serviceName))
 //            val port: Int = serviceInfo.port
 //            val host: InetAddress = serviceInfo.host
 //            Log.d(TAG, "Creatinng socket")
@@ -76,7 +73,6 @@ class NSDClient(
         override fun onServiceLost(serviceInfo: NsdServiceInfo?) {
             Log.d(TAG, "service lost")
         }
-
     }
 }
 

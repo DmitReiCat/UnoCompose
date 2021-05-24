@@ -1,14 +1,11 @@
 package com.example.unocompose.screens
 
-import android.app.Application
-import android.content.Context
 import android.net.nsd.NsdManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,14 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
-import com.example.unocompose.models.NSDHost
 import com.example.unocompose.сomponents.NavButton
 import com.example.unocompose.ui.theme.*
 import com.example.unocompose.viewmodels.LobbyScreenViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 //TODO()
@@ -38,8 +31,8 @@ val lobbyList = mutableStateOf<List<String>>(listOf("Amy", "Lily"))
 @Composable
 fun FindLobbyScreen(
     navController: NavController,
-    isHost: Boolean,
-    nsdManager: NsdManager
+    nsdManager: NsdManager,
+    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     Surface(
         color = cardBlack,
@@ -52,67 +45,21 @@ fun FindLobbyScreen(
 
             /*Lobby Text*/
             Text(
-                text = "Lobby",
+                text = "Available lobbies",
                 style = Typography.h1,
             )
-
-            val constraints = ConstraintSet {
-                val userList = createRefFor("userList")
-                val setting = createRefFor("settings")
-
-                constrain(userList) {
-                    start.linkTo(parent.start)
-                    end.linkTo(setting.start)
-                    top.linkTo(parent.top)
-                    width = Dimension.fillToConstraints
-                }
-                constrain(setting) {
-                    start.linkTo(userList.end)
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }
-
-            }
-
-            ConstraintLayout(constraints, modifier = Modifier
-                .fillMaxSize()
-                .background(cardBlue)) {
-
-                /*UserList*/
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .background(cardGreen)
-                        .layoutId("userList")
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .background(cardGreen)
+                    .layoutId("userList")
+            ) {
+                val visibleList by remember { viewModel.userList }
+                LazyColumn(
                 ) {
-                    val visibleList by remember { playerList }
-                    LazyColumn(
-                    ) {
-                        items(visibleList) {
-                            UserEntry(it)
-                        }
+                    items(visibleList) {
+                        UserEntry(it)
                     }
-                }
-
-                /*Settings*/
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .background(cardOrange)
-                        .layoutId("settings")
-                ) {
-                    Column() {
-                        NavButton(
-                            navController = navController,
-                            text = "Start",
-                            isMainButton = true,
-                            onClickDestination = "gameScreen")
-                        ButtonToRegister(nsdManager = nsdManager)
-                        ButtonToListen(nsdManager = nsdManager)
-                    }
-
-
-
                 }
             }
         }
