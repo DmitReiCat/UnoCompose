@@ -1,36 +1,59 @@
 package com.example.unocompose.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.unocompose.models.cards.DeckOfCards
 import com.example.unocompose.models.cards.Card
-import java.util.*
+import com.example.unocompose.models.cards.DeckOfCards
 
 class GameScreenViewModel: ViewModel() {
 
+    private val deck = DeckOfCards()
+    private val myCardsList = mutableListOf<Card>()
+    private var lastPlayedCard = Card("pink","skip")
 
-    val myCardsList = mutableListOf("cyan_0", "cyan_1", "cyan_skip",)
-    val myCardsState = mutableStateOf(listOf("cyan_0", "cyan_1", "cyan_skip",))
 //    val lastPlayedCards: Queue<String> = LinkedList<String>(listOf("orange_3", "purple_reverse", "pink_skip"))
 //    val lastPlayedCardsState = mutableStateOf(lastPlayedCards)
-    val lastPlayedCard = mutableStateOf("pink_skip")
 
-    val isUnoVisible = mutableStateOf(true)
+
+
+    val lastPlayedCardState = mutableStateOf("")
+    val myCardsState = mutableStateOf(listOf<String>())
+
+    val isUnoVisible = mutableStateOf(false)
     val cardCounter = mutableStateOf(myCardsList.size)
+    val specialEffectOnMe = mutableStateOf("")
+    val mySpecialEffect = mutableStateOf("")
 
-
-    fun removeFromList(index: Int){
-//        addToQueue(myCardsList[index])
-        lastPlayedCard.value = myCardsList[index]
-        myCardsList.removeAt(index)
-        myCardsState.value = myCardsList.toList()
-        cardCounter.value -= 1
+    init {
+        deck.createDeck()
+        lastPlayedCard = deck.getRandomCard()
+        lastPlayedCardState.value = lastPlayedCard.drawableName
+        for (iterations in 0..30) {
+            addToList(deck.getRandomCard())
+        }
     }
 
-    fun addToList(name: String) {
+    fun changeLastPlayedCard(card: Card) {
+        lastPlayedCard = card
+        lastPlayedCardState.value = lastPlayedCard.drawableName
+    }
+
+    private fun removeFromList(index: Int){
+//        addToQueue(myCardsList[index])
+        changeLastPlayedCard(myCardsList[index])
+        deck.returnCard(myCardsList[index])
+        myCardsList.removeAt(index)
+        myCardsState.value = myCardsList.map { it.drawableName }.toList()
+        cardCounter.value -= 1
+        if (cardCounter.value == 2) isUnoVisible.value = true
+    }
+
+    private fun addToList(name: Card) {
         myCardsList.add(name)
-        myCardsState.value = myCardsList.toList()
+        myCardsList.sortBy { card ->
+            card.color
+        }
+        myCardsState.value = myCardsList.map { it.drawableName }.toList()
         cardCounter.value += 1
     }
 
@@ -41,19 +64,12 @@ class GameScreenViewModel: ViewModel() {
 //    }
 
 
-    fun initialiseDeck(){
-        DeckOfCards.createDeck()
-        for (counter in 0..100) {
-            val card = DeckOfCards.getRandomCard()
-            Log.d("CardProperties" ,"${card.type} ${card.color}")
-        }
-    }
-
-    fun onCardClick(index: Int, name: String) {
+    fun makeMoveWithCard(index: Int) {
         if (
-            Card(name).type == Card(lastPlayedCard.value).type ||
-            Card(name).color == Card(lastPlayedCard.value).color ||
-            Card(name).color == "wild"
+            myCardsList[index].type == lastPlayedCard.type ||
+            myCardsList[index].color == lastPlayedCard.color ||
+            lastPlayedCard.color == "wild" &&
+            myCardsList[index].color == lastPlayedCard.type.split("_")[1]
         ) {
             removeFromList(index)
         }

@@ -16,7 +16,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ActivityComponent::class)
 object AppModule {
-
     @Provides
     fun provideNsdManager(
         @ApplicationContext context: Context

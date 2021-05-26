@@ -7,23 +7,23 @@ import kotlinx.coroutines.Dispatchers
 import java.io.ByteArrayInputStream
 import java.net.InetSocketAddress
 
-object ClientConnection {
+class ClientConnection {
 //    val availableLobbies = mutableSetOf(listOf())
 
-    lateinit var input:ByteReadChannel
-    lateinit var output:ByteWriteChannel
+
 
     suspend fun connect(ipAdress: String){
+
         val socket = aSocket(ActorSelectorManager(Dispatchers.IO)).tcp().connect(InetSocketAddress(ipAdress, 25556))
-        input = socket.openReadChannel()
-        output = socket.openWriteChannel(autoFlush = true)
+        val input = socket.openReadChannel()
+        val output = socket.openWriteChannel(autoFlush = true)
         }
-    suspend fun sendMessage(message: String){
-        output.writeStringUtf8("hello server!")
-    }
-    suspend fun acceptMessage(): String? {
-        return(input.readUTF8Line())
-    }
+//    suspend fun sendMessage(message: String){
+//        output.writeStringUtf8("hello server!")
+//    }
+//    suspend fun acceptMessage(): String? {
+//        return(input.readUTF8Line())
+//    }
 
 
 }

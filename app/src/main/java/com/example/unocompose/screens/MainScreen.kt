@@ -1,6 +1,5 @@
 package com.example.unocompose.screens
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,20 +28,21 @@ import androidx.navigation.NavController
 import com.example.unocompose.R
 import com.example.unocompose.сomponents.*
 import com.example.unocompose.ui.theme.*
+import com.example.unocompose.viewmodels.MainScreenViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 val padding = 10.dp
-var userName = ""
 
 @Composable
 fun MainScreen(
     navController: NavController,
+    viewModel: MainScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val systemUiController = rememberSystemUiController()
 
     Surface(
-        color = cardBlack,
+        color = bgPrimary,
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -95,16 +95,17 @@ fun MainScreen(
 @Composable
 fun NameField(
     hint: String,
+    viewModel: MainScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { viewModel.userNameState }
     var isHintDisplayed by remember { mutableStateOf(hint != "") }
     Box(modifier = Modifier) {
         BasicTextField(
             value = text,
             onValueChange = {
                 text = it
-                userName = it
-                Log.d("Name", userName)
+                viewModel.changeName(it)
+                Log.d("Name", viewModel.userNameState.value)
             },
             maxLines = 1,
             singleLine = true,
@@ -158,14 +159,16 @@ fun UserMenu(navController: NavController) {
             navController = navController,
             text = "Create",
             isMainButton = true,
-            onClickDestination = "createLobbyScreen"
+            onClickDestination = "lobbyScreen",
+            isGame = false
         )
         Spacer(modifier = Modifier.padding(padding))
         NavButton(
             navController = navController,
             text = "Find",
             isMainButton = false,
-            onClickDestination = "findLobbyScreen"
+            onClickDestination = "findLobbyScreen",
+            isGame = false
         )
 
     }

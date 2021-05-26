@@ -8,10 +8,8 @@ import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,11 +18,9 @@ import com.example.unocompose.screens.FindLobbyScreen
 import com.example.unocompose.screens.GameScreen
 import com.example.unocompose.screens.LobbyScreen
 import com.example.unocompose.screens.MainScreen
-import com.example.unocompose.viewmodels.LobbyScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-
+ @AndroidEntryPoint
  class MainActivity : ComponentActivity() {
 
 
@@ -50,8 +46,11 @@ import javax.inject.Inject
                  composable("mainScreen") {
                      MainScreen(navController = navController)
                  }
-                 composable("createLobbyScreen") {
-                     LobbyScreen(navController = navController, isHost = true, nsdManager = nsdManager)
+                 composable("lobbyScreen") {
+                     LobbyScreen(navController = navController, nsdManager = nsdManager, isHost = true)
+                 }
+                 composable("clientLobbyScreen") {
+                     LobbyScreen(navController = navController, nsdManager = nsdManager, isHost = false)
                  }
                  composable("findLobbyScreen") {
                      FindLobbyScreen(navController = navController, nsdManager = nsdManager)

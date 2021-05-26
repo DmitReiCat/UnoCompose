@@ -1,14 +1,13 @@
 package com.example.unocompose.models.cards
 
 import android.util.Log
+import java.lang.StringBuilder
 
-class Card(private val name: String) {
+data class Card(val color: String, val type: String) {
     init {
-        Log.d("CARDCLASS" ,name)
+        Log.d("CARDCLASS" ,"$color $type")
     }
+    val drawableName = StringBuilder().append(color, "_", type).toString()
 
-    val split = name.split("_")
-    val color = split[0]
-    val type = split[1]
 
 }

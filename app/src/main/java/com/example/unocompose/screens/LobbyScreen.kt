@@ -3,7 +3,7 @@ package com.example.unocompose.screens
 import android.net.nsd.NsdManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -23,7 +23,8 @@ import androidx.navigation.NavController
 import com.example.unocompose.сomponents.NavButton
 import com.example.unocompose.ui.theme.*
 import com.example.unocompose.viewmodels.LobbyScreenViewModel
-import kotlinx.coroutines.launch
+import com.example.unocompose.сomponents.ButtonToListen
+import com.example.unocompose.сomponents.ButtonToRegister
 
 
 //TODO()
@@ -33,11 +34,12 @@ val playerList = mutableStateOf<List<String>>(mutableListOf("Amy", "Lily"))
 @Composable
 fun LobbyScreen(
     navController: NavController,
+    nsdManager: NsdManager,
     isHost: Boolean,
-    nsdManager: NsdManager
+    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     Surface(
-        color = cardBlack,
+        color = bgPrimary,
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -56,8 +58,8 @@ fun LobbyScreen(
                 val setting = createRefFor("settings")
 
                 constrain(userList) {
-                    start.linkTo(parent.start)
-                    end.linkTo(setting.start)
+                    start.linkTo(anchor = parent.start, margin = 20.dp)
+                    end.linkTo(anchor = setting.start, margin = 10.dp)
                     top.linkTo(parent.top)
                     width = Dimension.fillToConstraints
                 }
@@ -71,17 +73,20 @@ fun LobbyScreen(
 
             ConstraintLayout(constraints, modifier = Modifier
                 .fillMaxSize()
-                .background(cardBlue)) {
+                ) {
 
                 /*UserList*/
                 Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .background(cardGreen)
+                        .background(cardCyan)
                         .layoutId("userList")
                 ) {
-                    val visibleList by remember { playerList }
-                    LazyColumn(
+                    val visibleList by remember { viewModel.userListState }
+                    LazyRow(
+                        Modifier
+//                            .border(width = 3.dp, color = cardOrange)
                     ) {
                         items(visibleList) {
                             UserEntry(it)
@@ -90,82 +95,61 @@ fun LobbyScreen(
                 }
 
                 /*Settings*/
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .background(cardOrange)
-                        .layoutId("settings")
-                ) {
-                    Column() {
-                        NavButton(
-                            navController = navController,
-                            text = "Start",
-                            isMainButton = true,
-                            onClickDestination = "gameScreen")
-                        ButtonToRegister(nsdManager = nsdManager)
-                        ButtonToListen(nsdManager = nsdManager)
-                        Button(onClick = { playerList.value += "hello!" }) {
-                            
+                if (isHost) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .background(cardOrange)
+                            .layoutId("settings")
+                    ) {
+                        Column() {
+                            NavButton(
+                                navController = navController,
+                                text = "Start",
+                                isMainButton = true,
+                                onClickDestination = "gameScreen",
+                                isGame = true
+                            )
+                            ButtonToRegister(nsdManager = nsdManager)
+                            ButtonToListen(nsdManager = nsdManager)
+                            Button(onClick = { playerList.value += "hello!" }) {
+
+                            }
                         }
                     }
-
-
-
                 }
+
             }
         }
     }
 }
 
-@Composable
-fun ButtonToRegister(
-    nsdManager: NsdManager,
-    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-) {
-    val composableScope = rememberCoroutineScope()
-    Button(
-        onClick = { composableScope.launch {
-            viewModel.openOnNetwork(nsdManager)
-        } }
-    ) {
-        Text(
-            text = "Register",
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
-        )
-    }
-}
 
-@Composable
-fun ButtonToListen(
-    nsdManager: NsdManager,
-    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-) {
-    val composableScope = rememberCoroutineScope()
-    Button(
-        onClick = { composableScope.launch {
-            viewModel.findLobby(nsdManager) }
-        }
-    ) {
-        Text(
-            text = "Listen",
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
-        )
-    }
-}
 
 
 @Composable
 fun UserEntry(name: String) {
     Box(
+        contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 30.dp)
-            .background(cardBlue, RoundedCornerShape(20.dp))
+            .width(150.dp)
+            .fillMaxHeight()
+            .padding(end = 10.dp)
+            .padding(vertical = 30.dp)
+            .background(cardPink, RoundedCornerShape(20.dp))
     ) {
-        Text(
-            text = name,
-            style = Typography.h1
+        Column() {
 
-        )
+            Text(
+                text = "Player",
+                style = Typography.h3
+
+            )
+            Text(
+                text = name,
+                style = Typography.h3,
+                modifier = Modifier.padding(vertical = 10.dp, horizontal = 5.dp)
+            )
+        }
     }
 }

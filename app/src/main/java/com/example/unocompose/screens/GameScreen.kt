@@ -18,7 +18,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -26,6 +25,7 @@ import androidx.navigation.NavController
 import com.example.unocompose.R
 import com.example.unocompose.ui.theme.*
 import com.example.unocompose.viewmodels.GameScreenViewModel
+import com.example.unocompose.сomponents.ChoseWildColor
 
 
 @Composable
@@ -34,28 +34,35 @@ fun GameScreen(
     viewModel: GameScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
     Surface(
-        color = cardBlack,
+        color = bgPrimary,
         modifier = Modifier
             .fillMaxSize()
     ){
+
+
+
+
         val constraints = ConstraintSet {
             val myCards = createRefFor("myCards")
             val unoButton = createRefFor("unoButton")
             val myCounter = createRefFor("myCounter")
             val lastPlayedCard = createRefFor("lastPlayedCard")
+            val specialEffectOnMe = createRefFor("specialEffectOnMe")
+            val mySpecialEffect = createRefFor("mySpecialEffect")
+
 
             constrain(myCards) {
-                bottom.linkTo(parent.bottom)
+                bottom.linkTo(parent.bottom, margin = (-20).dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }
             constrain(unoButton) {
-                bottom.linkTo(parent.bottom)
-                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom, margin = 15.dp)
+                end.linkTo(parent.end, margin = 30.dp)
             }
             constrain(myCounter) {
                 top.linkTo(myCards.top)
-                start.linkTo(parent.start)
+                end.linkTo(myCards.start)
             }
             constrain(lastPlayedCard) {
                 top.linkTo(parent.top)
@@ -63,24 +70,35 @@ fun GameScreen(
                 end.linkTo(parent.end)
                 bottom.linkTo(myCards.top)
             }
+            constrain(specialEffectOnMe) {
+                bottom.linkTo(myCards.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+            constrain(mySpecialEffect) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(myCards.top)
+            }
+
 
         }
 
         ConstraintLayout(constraints, modifier = Modifier
             .fillMaxSize()
-            .background(cardBlack)) {
+            .background(bgPrimary)) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .layoutId("myCards")
-                    .width(400.dp)
+                    .widthIn(max = 400.dp)
             ){  MyCards()  }
 
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .layoutId("unoButton")
-                    .padding(vertical = 15.dp, horizontal = 30.dp)
             ){  UnoButton()  }
 
             Box(
@@ -95,6 +113,9 @@ fun GameScreen(
                     .layoutId("lastPlayedCard")
                     .padding(vertical = 15.dp, horizontal = 30.dp)
             ){  LastPlayedCard()  }
+            Box(modifier = Modifier.layoutId("mySpecialEffect")) {
+                MySpecialEffect()
+            }
 
         }
 
@@ -109,11 +130,38 @@ fun GameScreen(
 }
 
 
+
+@Composable
+fun MySpecialEffect(
+    viewModel: GameScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    val specialEffectKind by remember {  viewModel.mySpecialEffect  }
+    Box(
+        Modifier
+            .wrapContentSize()
+            .background(color = bgTransparent)
+    ){
+        when (specialEffectKind) {
+            "choseColor" -> ChoseWildColor(isPlus4 = true)
+            else -> Text(text = "jshf")
+        }
+    }
+}
+
+
+
+@Composable
+fun SpecialEffectOnMe(
+    viewModel: GameScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+}
+
 @Composable
 fun LastPlayedCard(
     viewModel: GameScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    val lastCard by remember {  viewModel.lastPlayedCard  }
+    val lastCard by remember {  viewModel.lastPlayedCardState  }
     val resId = LocalContext.current.resources.getIdentifier(
         lastCard,
         "drawable",
@@ -147,7 +195,7 @@ fun UnoButton(
             modifier = Modifier
                 .height(100.dp)
                 .clickable {
-
+                    viewModel.mySpecialEffect.value = "choseColor"
                 }
         )
     }
@@ -167,7 +215,7 @@ fun MyCardsCounter(
             modifier = Modifier
                 .height(40.dp)
         )
-        Text(text = counter.toString(), style = Typography.h1)
+        Text(text = counter.toString(), style = Typography.h2)
 
     }
 
@@ -179,15 +227,11 @@ fun MyCardsCounter(
 fun MyCards(
     viewModel: GameScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    //ForSerrver~!
-    viewModel.initialiseDeck()
     
     ///
     val visibleList by remember { viewModel.myCardsState }
     LazyRow(
-        horizontalArrangement = Arrangement
-            .spacedBy((-30).dp),
-
+        horizontalArrangement = Arrangement.spacedBy((-30).dp),
         ) {
         itemsIndexed(visibleList) { index, name ->
             val resId = LocalContext.current.resources.getIdentifier(
@@ -204,20 +248,9 @@ fun MyCards(
                 modifier = Modifier
                     .width(80.dp)
                     .clickable {
-                        viewModel.onCardClick(index, name)
-                        Log.d(
-                            "CardList",
-                            "${visibleList.toString()} ${viewModel.myCardsList}"
-                        )
+                        viewModel.makeMoveWithCard(index)
                     }
             )
         }
     }
-}
-
-
-
-@Preview
-@Composable
-fun ComposablePreview() {
 }

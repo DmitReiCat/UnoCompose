@@ -4,122 +4,78 @@ import android.util.Log
 import java.lang.StringBuilder
 import java.util.*
 
-object DeckOfCards {
+class DeckOfCards {
+
     var cards = mutableMapOf<Card, Int>()
     private val decksCount = 2
-    init {
-        Log.d("DeckOfCards", "init")
-    }
 
-//    val cardsAvailable = mutableMapOf<Card, Int>(
-//        Card("cyan_0") to 2,
-//        Card("cyan_1") to 2,
-//        Card("cyan_2") to 2,
-//        Card("cyan_3") to 2,
-//        Card("cyan_4") to 2,
-//        Card("cyan_5") to 2,
-//        Card("cyan_6") to 2,
-//        Card("cyan_7") to 2,
-//        Card("cyan_8") to 2,
-//        Card("cyan_9") to 2,
-//        Card("cyan_0") to 2,
-//        Card("cyan_plus2") to 2,
-//        Card("cyan_reverse") to 2,
-//        Card("cyan_skip") to 2,
-//
-//        Card("orange_0") to 2,
-//        Card("orange_1") to 2,
-//        Card("orange_2") to 2,
-//        Card("orange_3") to 2,
-//        Card("orange_4") to 2,
-//        Card("orange_5") to 2,
-//        Card("orange_6") to 2,
-//        Card("orange_7") to 2,
-//        Card("orange_8") to 2,
-//        Card("orange_9") to 2,
-//        Card("orange_0") to 2,
-//        Card("orange_plus2") to 2,
-//        Card("orange_reverse") to 2,
-//        Card("orange_skip") to 2,
-//
-//        Card("pink_0") to 2,
-//        Card("cyan_1") to 2,
-//        Card("cyan_2") to 2,
-//        Card("cyan_3") to 2,
-//        Card("cyan_4") to 2,
-//        Card("cyan_5") to 2,
-//        Card("cyan_6") to 2,
-//        Card("cyan_7") to 2,
-//        Card("cyan_8") to 2,
-//        Card("cyan_9") to 2,
-//        Card("cyan_0") to 2,
-//        Card("cyan_plus2") to 2,
-//        Card("cyan_reverse") to 2,
-//        Card("cyan_skip") to 2,
-//
-//        Card("cyan_0") to 2,
-//        Card("cyan_1") to 2,
-//        Card("cyan_2") to 2,
-//        Card("cyan_3") to 2,
-//        Card("cyan_4") to 2,
-//        Card("cyan_5") to 2,
-//        Card("cyan_6") to 2,
-//        Card("cyan_7") to 2,
-//        Card("cyan_8") to 2,
-//        Card("cyan_9") to 2,
-//        Card("cyan_0") to 2,
-//        Card("cyan_plus2") to 2,
-//        Card("cyan_reverse") to 2,
-//        Card("cyan_skip") to 2,
-//    )
-
-    private val colors = listOf("cyan", "orange","pink", "purple")
+    private val colors = listOf("cyan", "orange", "pink", "purple")
     private val types = listOf(
         "0", "1", "2", "3", "4", "5", "6", "7",
         "8", "9", "skip", "reverse", "plus2"
-        )
-    fun createDeck () {
+    )
+
+
+    fun createDeck() {
         for (color in colors) {
             for (type in types) {
-                val name = StringBuilder()
-                name.append(color, "_", type)
-                cards[Card(name.toString())] = decksCount
+                cards[Card(color, type)] = decksCount
             }
+        }
+        for (iterations in 0..1) {
+            cards[Card("wild", "common")] = decksCount
+            cards[Card("wild", "plus4")] = decksCount
         }
         Log.d("Deck", cards.toString())
     }
 
-
     fun getRandomCard(): Card {
-        val random = Random()
-        val name = StringBuilder()
-        name.append(
-            when (Random().nextInt(3)) {
-            0 -> "cyan"
-            1 -> "orange"
-            2 -> "pink"
-            else -> "purple"
-            },
-            "_",
-            when (Random().nextInt(12)) {
-                0 -> "0"
-                1 -> "1"
-                2 -> "2"
-                3 -> "3"
-                4 -> "4"
-                5 -> "5"
-                6 -> "6"
-                7 -> "7"
-                8 -> "8"
-                9 -> "9"
-                10 -> "skip"
-                11 -> "reverse"
-                else -> "plus2"
+        var type = ""
+        var color = ""
+        do {
+            color = when (Random().nextInt(5)) {
+                0 -> "cyan"
+                1 -> "orange"
+                2 -> "pink"
+                3 -> "purple"
+                else ->{
+                    Log.d("Generated", "WILD!")
+                    "wild"
+                }
+
             }
-        )
-        Log.d("CardGenerationName" ,"${name.toString()}")
-        return Card(name.toString())
+            type = if (color != "wild") {
+                when (Random().nextInt(13)) {
+                    0 -> "0"
+                    1 -> "1"
+                    2 -> "2"
+                    3 -> "3"
+                    4 -> "4"
+                    5 -> "5"
+                    6 -> "6"
+                    7 -> "7"
+                    8 -> "8"
+                    9 -> "9"
+                    10 -> "skip"
+                    11 -> "reverse"
+                    else -> "plus2"
+                }
+            } else {
+                when (Random().nextInt(1)) {
+                    0 -> "common"
+                    else -> "plus4"
+                }
+            }
+            Log.d("DeckRamdomised", "${ Card(color, type) } ${ cards[Card(color,type)] }")
+        } while (cards[Card(color,type)]!! == 0)
+        cards[Card(color,type)] = cards[Card(color,type)]!! - 1
+        return Card(color, type)
+    }
+
+    fun returnCard(card: Card){
+        Log.d("returning card...", "${ cards[card] }")
+        cards[card] = cards[card]!! + 1
+        Log.d("card returned", "${ cards[card] }")
     }
 
 }
-

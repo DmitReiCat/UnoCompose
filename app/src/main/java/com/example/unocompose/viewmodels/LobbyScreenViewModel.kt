@@ -7,15 +7,14 @@ import com.example.unocompose.models.network.NSDClient
 import com.example.unocompose.models.network.NSDHost
 import com.example.unocompose.models.network.ScanResult
 
-class LobbyScreenViewModel: ViewModel() {
+class LobbyScreenViewModel: ViewModel()  {
 
+    private val userList = mutableListOf<ScanResult>()
+    val userListState = mutableStateOf<List<String>>(listOf("Amy", "Amy", "Amy", "Amy"))
 
-    val userData = mutableListOf<ScanResult>()
-    val userList = mutableStateOf<List<String>>(listOf())
-
-    fun updateUserList() {
-        for (data in userData) {
-            userList.value += data.name
+    private fun updateUserList() {
+        for (data in userList) {
+            userListState.value += data.name
         }
     }
 
@@ -24,7 +23,10 @@ class LobbyScreenViewModel: ViewModel() {
     }
 
     suspend fun findLobby(nsdManager: NsdManager) {
-        NSDClient(nsdManager){  userData.add(it)  }.startDiscovery()
-        updateUserList()
+        NSDClient(nsdManager){
+            userList.add(it)
+            updateUserList()
+        }.startDiscovery()
+
     }
 }

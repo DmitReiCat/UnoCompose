@@ -2,6 +2,7 @@ package com.example.unocompose.screens
 
 import android.net.nsd.NsdManager
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,15 +14,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import com.example.unocompose.сomponents.NavButton
+import androidx.navigation.compose.navigate
 import com.example.unocompose.ui.theme.*
-import com.example.unocompose.viewmodels.LobbyScreenViewModel
+import com.example.unocompose.viewmodels.FindLobbyScreenViewModel
+import com.example.unocompose.сomponents.ButtonToListen
+import com.example.unocompose.сomponents.ButtonToRegister
 
 
 //TODO()
@@ -32,33 +33,36 @@ val lobbyList = mutableStateOf<List<String>>(listOf("Amy", "Lily"))
 fun FindLobbyScreen(
     navController: NavController,
     nsdManager: NsdManager,
-    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: FindLobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     Surface(
-        color = cardBlack,
+        color = bgPrimary,
         modifier = Modifier
             .fillMaxSize()
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()) {
-
+            modifier = Modifier.fillMaxSize()
+        ) {
             /*Lobby Text*/
-            Text(
-                text = "Available lobbies",
-                style = Typography.h1,
-            )
+            Row() {
+                Text(
+                    text = "Available lobbies",
+                    style = Typography.h1,
+                )
+                ButtonToRegister(nsdManager = nsdManager)
+                ButtonToListen(nsdManager = nsdManager)
+            }
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .background(cardGreen)
                     .layoutId("userList")
             ) {
-                val visibleList by remember { viewModel.userList }
+                val visibleList by remember { viewModel.lobbyListState }
                 LazyColumn(
                 ) {
                     items(visibleList) {
-                        UserEntry(it)
+                        LobbyEntry(name = it, navController = navController)
                     }
                 }
             }
@@ -68,16 +72,22 @@ fun FindLobbyScreen(
 
 
 @Composable
-fun LobbyEntry(name: String) {
+fun LobbyEntry(
+    name: String,
+    navController: NavController
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 30.dp)
-            .background(cardBlue, RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(20.dp))
+            .background(cardPurple)
+            .clickable(onClick = { navController.navigate("clientLobbyScreen") })
     ) {
         Text(
             text = name,
-            style = Typography.h1
+            style = Typography.h1,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
 
         )
     }

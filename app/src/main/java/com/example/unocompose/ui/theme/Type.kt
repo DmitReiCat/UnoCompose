@@ -1,10 +1,14 @@
 package com.example.unocompose.ui.theme
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Text
 import androidx.compose.material.Typography
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.unocompose.R
 
@@ -35,4 +39,19 @@ val Typography = Typography(
                 fontWeight = FontWeight.Medium,
                 fontSize = 40.sp,
         ),
+        h3 = TextStyle(
+                fontFamily = NunitoSans,
+                color = textWhite,
+                fontWeight = FontWeight.Medium,
+                fontSize = 25.sp,
+        )
 )
+@Preview
+@Composable
+fun Preview (){
+        Column(){
+                Text(text = "Hello!", style = Typography.h3)
+                Text(text = "Hello!", style = Typography.h1)
+        }
+
+}
