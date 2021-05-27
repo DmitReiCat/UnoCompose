@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,10 +20,16 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import com.example.unocompose.models.gson.Message
+import com.example.unocompose.models.network.ScanResult
+import com.example.unocompose.models.network.ServerConnection
 import com.example.unocompose.ui.theme.*
 import com.example.unocompose.viewmodels.FindLobbyScreenViewModel
 import com.example.unocompose.сomponents.ButtonToListen
 import com.example.unocompose.сomponents.ButtonToRegister
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 //TODO()
@@ -52,6 +59,7 @@ fun FindLobbyScreen(
                 )
                 ButtonToRegister(nsdManager = nsdManager)
                 ButtonToListen(nsdManager = nsdManager)
+
             }
             Box(
                 modifier = Modifier
@@ -62,7 +70,7 @@ fun FindLobbyScreen(
                 LazyColumn(
                 ) {
                     items(visibleList) {
-                        LobbyEntry(name = it, navController = navController)
+                        LobbyEntry(lobby = it, navController = navController)
                     }
                 }
             }
@@ -73,19 +81,26 @@ fun FindLobbyScreen(
 
 @Composable
 fun LobbyEntry(
-    name: String,
-    navController: NavController
+    lobby: ScanResult,
+    navController: NavController,
+    viewModel: FindLobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
+    val composableScope = rememberCoroutineScope()
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 30.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(cardPurple)
-            .clickable(onClick = { navController.navigate("clientLobbyScreen") })
+            .clickable(onClick = {
+                navController.navigate("clientLobbyScreen")
+                composableScope.launch{
+                    viewModel.connectToLobby(lobby.ipAddress)
+                }
+            })
     ) {
         Text(
-            text = name,
+            text = lobby.name,
             style = Typography.h1,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
 

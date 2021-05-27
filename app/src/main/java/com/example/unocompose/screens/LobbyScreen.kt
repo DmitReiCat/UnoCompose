@@ -27,9 +27,6 @@ import com.example.unocompose.сomponents.ButtonToListen
 import com.example.unocompose.сomponents.ButtonToRegister
 
 
-//TODO()
-val playerList = mutableStateOf<List<String>>(mutableListOf("Amy", "Lily"))
-//TODO()
 
 @Composable
 fun LobbyScreen(
@@ -93,6 +90,9 @@ fun LobbyScreen(
                         }
                     }
                 }
+                Button(onClick = { viewModel.send("Hello server") }) {
+
+                }
 
                 /*Settings*/
                 if (isHost) {
@@ -112,13 +112,9 @@ fun LobbyScreen(
                             )
                             ButtonToRegister(nsdManager = nsdManager)
                             ButtonToListen(nsdManager = nsdManager)
-                            Button(onClick = { playerList.value += "hello!" }) {
-
-                            }
                         }
                     }
                 }
-
             }
         }
     }

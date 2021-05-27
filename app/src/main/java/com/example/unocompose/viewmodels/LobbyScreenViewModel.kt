@@ -3,6 +3,7 @@ package com.example.unocompose.viewmodels
 import android.net.nsd.NsdManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.unocompose.models.network.ClientConnection
 import com.example.unocompose.models.network.NSDClient
 import com.example.unocompose.models.network.NSDHost
 import com.example.unocompose.models.network.ScanResult
@@ -18,15 +19,11 @@ class LobbyScreenViewModel: ViewModel()  {
         }
     }
 
-    suspend fun openOnNetwork(nsdManager: NsdManager) {
-        NSDHost(nsdManager).registerService()
+    fun send(data: String) {
+        ClientConnection.sendData(data)
     }
 
-    suspend fun findLobby(nsdManager: NsdManager) {
-        NSDClient(nsdManager){
-            userList.add(it)
-            updateUserList()
-        }.startDiscovery()
-
+    suspend fun openOnNetwork(nsdManager: NsdManager) {
+        NSDHost(nsdManager).registerService()
     }
 }

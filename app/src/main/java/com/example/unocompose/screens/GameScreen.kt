@@ -248,6 +248,7 @@ fun MyCards(
                 modifier = Modifier
                     .width(80.dp)
                     .clickable {
+                        Log.d("GameScreen", "Clicked!")
                         viewModel.makeMoveWithCard(index)
                     }
             )

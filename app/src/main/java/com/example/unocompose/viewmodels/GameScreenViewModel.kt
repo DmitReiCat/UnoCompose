@@ -10,6 +10,8 @@ class GameScreenViewModel: ViewModel() {
     private val deck = DeckOfCards()
     private val myCardsList = mutableListOf<Card>()
     private var lastPlayedCard = Card("pink","skip")
+//TODO server connection commands
+
 
 //    val lastPlayedCards: Queue<String> = LinkedList<String>(listOf("orange_3", "purple_reverse", "pink_skip"))
 //    val lastPlayedCardsState = mutableStateOf(lastPlayedCards)
@@ -28,7 +30,7 @@ class GameScreenViewModel: ViewModel() {
         deck.createDeck()
         lastPlayedCard = deck.getRandomCard()
         lastPlayedCardState.value = lastPlayedCard.drawableName
-        for (iterations in 0..30) {
+        for (iterations in 0..2) {
             addToList(deck.getRandomCard())
         }
     }
@@ -45,7 +47,7 @@ class GameScreenViewModel: ViewModel() {
         myCardsList.removeAt(index)
         myCardsState.value = myCardsList.map { it.drawableName }.toList()
         cardCounter.value -= 1
-        if (cardCounter.value == 2) isUnoVisible.value = true
+        isUnoVisible.value = cardCounter.value == 2
     }
 
     private fun addToList(name: Card) {
@@ -68,9 +70,11 @@ class GameScreenViewModel: ViewModel() {
         if (
             myCardsList[index].type == lastPlayedCard.type ||
             myCardsList[index].color == lastPlayedCard.color ||
+            myCardsList[index].color == "wild"||
             lastPlayedCard.color == "wild" &&
             myCardsList[index].color == lastPlayedCard.type.split("_")[1]
         ) {
+            //TODO Special effects
             removeFromList(index)
         }
     }

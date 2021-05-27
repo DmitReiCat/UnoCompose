@@ -87,7 +87,10 @@ dependencies {
     // Activity KTX for viewModels()
     implementation "androidx.activity:activity-ktx:1.1.0"
 
-    //Ktor for connections
+    // Ktor for connections
     implementation("io.ktor:ktor-network:1.5.4")
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 
 }

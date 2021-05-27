@@ -31,7 +31,7 @@ class NSDHost(
             Log.d(TAGNSD, "Service registered!, ${NsdServiceInfo.serviceName}, ${NsdServiceInfo.serviceType}")
             GlobalScope.launch {
                 Log.d(TAG,"launching coroutine  ")
-                ServerConnection().createChannels()
+                ServerConnection().startServer()
             }
 
 
