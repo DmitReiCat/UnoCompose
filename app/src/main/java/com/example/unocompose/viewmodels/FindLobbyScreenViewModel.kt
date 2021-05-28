@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.unocompose.models.GameData
 import com.example.unocompose.models.gson.Message
 import com.example.unocompose.models.network.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,10 +36,8 @@ class FindLobbyScreenViewModel @Inject constructor(
         lobbyListState.value = lobbyList.toList()
     }
 
-    suspend fun connectToLobby(ip: InetAddress){
-        GlobalScope.launch {
-            ClientConnection.connect(ip)
-        }
+    fun connectToLobby(ip: InetAddress){
+        GameData.currentServer = ip
     }
 
     suspend fun findLobby(nsdManager: NsdManager) {

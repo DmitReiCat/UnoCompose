@@ -66,9 +66,10 @@ class DeckOfCards {
                     else -> "plus4"
                 }
             }
-            Log.d("DeckRamdomised", "${ Card(color, type) } ${ cards[Card(color,type)] }")
+
         } while (cards[Card(color,type)]!! == 0)
         cards[Card(color,type)] = cards[Card(color,type)]!! - 1
+        Log.d("DeckRamdomisedCard", "${ Card(color, type) } }")
         return Card(color, type)
     }
 

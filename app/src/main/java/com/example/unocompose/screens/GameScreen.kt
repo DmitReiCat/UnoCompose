@@ -167,7 +167,7 @@ fun LastPlayedCard(
         "drawable",
         LocalContext.current.packageName
     )
-    Log.d("resId", "$resId, ${LocalContext.current.packageName}")
+    Log.d("resId", "resId= $resId, name= $lastCard")
     val painter = painterResource(id = resId)
     Image(
         contentScale = ContentScale.FillWidth,
@@ -239,7 +239,7 @@ fun MyCards(
                 "drawable",
                 LocalContext.current.packageName
             )
-            Log.d("resId", "$resId, ${LocalContext.current.packageName}")
+            Log.d("resId", "resId= $resId, name= $name")
             val painter = painterResource(id = resId)
             Image(
                 contentScale = ContentScale.FillWidth,

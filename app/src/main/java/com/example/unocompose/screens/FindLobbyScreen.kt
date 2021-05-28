@@ -84,9 +84,7 @@ fun LobbyEntry(
             .background(cardPurple)
             .clickable(onClick = {
                 navController.navigate("clientLobbyScreen")
-                composableScope.launch {
-                    viewModel.connectToLobby(lobby.ipAddress)
-                }
+                viewModel.connectToLobby(lobby.ipAddress)
             })
     ) {
         Text(

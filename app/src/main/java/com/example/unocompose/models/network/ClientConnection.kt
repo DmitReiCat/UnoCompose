@@ -13,19 +13,25 @@ import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 
-object ClientConnection {
+class ClientConnection (
+    private val port: Int,
+    private val onReceive : (String) -> Unit
+) {
     //    val availableLobbies = mutableSetOf(listOf())
     val coroutineContext =
         Executors.newSingleThreadExecutor().asCoroutineDispatcher() + CoroutineName("Client data")
+    val gson = Gson()
     var data = ""
 
 
-    suspend fun connect(ipAddress: InetAddress) {
+    suspend fun connect() {
         val serverSocket = aSocket(ActorSelectorManager(Dispatchers.IO)).tcp()
-            .connect(InetSocketAddress(ipAddress, 25556))
+            .connect(InetSocketAddress(GameData.currentServer, 25556))
 
         val input = serverSocket.openReadChannel()
         val output = serverSocket.openWriteChannel(autoFlush = true)
+        output.writeStringUtf8(GameData.myName)
+        output.writeStringUtf8("\n")
 
 
         GlobalScope.launch {
@@ -33,9 +39,18 @@ object ClientConnection {
                 while (true) {
                     val receivedMessage = input.readUTF8Line()
                     Log.d(
-                        "Client message listener",
+                        "Client message received",
                         "${serverSocket.remoteAddress}: $receivedMessage"
                     )
+                    if (receivedMessage == null) {
+                        serverSocket.close()
+                    } else {
+                        Log.d(
+                            "Client message received",
+                            "sending to ViewModel"
+                        )
+                        onReceive(receivedMessage)
+                    }
 
                     //TODO message handler
                 }
@@ -62,9 +77,7 @@ object ClientConnection {
         while (data != "") {
             continue
         }
-        var gson = Gson()
-        val newData = Message(ip = "", data = "Hello", type = "NameInit")
-        var jsonString = gson.toJson(dataToSend)
+        val jsonString = gson.toJson(dataToSend)
         data = jsonString
     }
 

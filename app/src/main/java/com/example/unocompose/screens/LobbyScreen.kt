@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +22,6 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.popUpTo
-import com.example.unocompose.models.gson.Message
 import com.example.unocompose.ui.theme.*
 import com.example.unocompose.viewmodels.LobbyScreenViewModel
 
@@ -87,11 +85,13 @@ fun LobbyScreen(
 //                            .border(width = 3.dp, color = cardOrange)
                     ) {
                         items(visibleList) {
-                            UserEntry(it)
+                            UserEntry(it.name)
                         }
                     }
                 }
-                Button(onClick = { viewModel.send("nameInit") }) { }
+//                Button(onClick = { viewModel.send("nameInit") }) { }
+
+                val join by remember {viewModel.connectToGame}
 
                 /*Settings*/
                 if (isHost) {
@@ -104,6 +104,11 @@ fun LobbyScreen(
                         Column() {
                             StartButton(navController = navController)
                         }
+                    }
+                } else if ( join ) {
+                    viewModel.tearDownConnection()
+                    navController.navigate("gameScreen") {
+                        popUpTo(route = "mainScreen") {}
                     }
                 }
             }

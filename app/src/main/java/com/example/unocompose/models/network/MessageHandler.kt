@@ -4,11 +4,9 @@ import com.example.unocompose.models.gson.Message
 
 
 abstract class MessageHandler {
-    abstract fun send(type: String)
+    abstract fun send(message: Message)
+    abstract fun getCard()
+    abstract fun initialise()
 
-    abstract fun receive()
 
-    fun serialize(){
-
-    }
 }
