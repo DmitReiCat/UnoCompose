@@ -255,3 +255,12 @@ fun MyCards(
         }
     }
 }
+
+@Composable
+fun RightPlayer(
+
+) {
+    Box() {
+
+    }
+}

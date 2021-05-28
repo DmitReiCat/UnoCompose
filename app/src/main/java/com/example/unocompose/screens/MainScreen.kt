@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -19,8 +20,10 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -46,8 +49,9 @@ fun MainScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column(
-        ) {
+        Column {
+            val dissmiss by remember { viewModel.isDialogVisible }
+            if (dissmiss) { EnterYourNamePopUp() }
             val constraints = ConstraintSet {
                 val logo = createRefFor("logo")
                 val userMenu = createRefFor("userMenu")
@@ -93,6 +97,39 @@ fun MainScreen(
 
 
 @Composable
+fun EnterYourNamePopUp(
+    viewModel: MainScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+    Dialog(
+        onDismissRequest = { viewModel.isDialogVisible.value = false },
+    ) {
+        Box(
+            modifier = Modifier
+                .wrapContentSize()
+                .background(shape = RoundedCornerShape(20.dp), color = bgPrimary2)
+        ){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Welcome to UNO!",
+                    style = Typography.h4,
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+                Spacer(modifier = Modifier.size(30.dp))
+                NameField(hint = "Enter yor name here")
+                Spacer(modifier = Modifier.size(10.dp))
+
+            }
+        }
+    }
+}
+
+@Composable
 fun NameField(
     hint: String,
     viewModel: MainScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
@@ -109,11 +146,7 @@ fun NameField(
             },
             maxLines = 1,
             singleLine = true,
-            textStyle = TextStyle(
-                fontFamily = NunitoSans,
-                color = textWhite,
-                fontWeight = FontWeight.Light,
-                fontSize = 20.sp),
+            textStyle = Typography.h3,
             modifier = Modifier
                 .background(Color.Transparent, CircleShape)
                 .padding(horizontal = 20.dp, vertical = 5.dp)
@@ -122,15 +155,10 @@ fun NameField(
                 }
                 .wrapContentSize()
         )
-        if (isHintDisplayed) {
+        if (isHintDisplayed && text.isEmpty()) {
             Text(
                 text = hint,
-                style = TextStyle(
-                    fontFamily = NunitoSans,
-                    color = textWhite,
-                    fontWeight = FontWeight.Light,
-                    fontSize = 20.sp,
-                ),
+                style = Typography.h3,
                 color = Color.LightGray,
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
             )
@@ -160,7 +188,6 @@ fun UserMenu(navController: NavController) {
             text = "Create",
             isMainButton = true,
             onClickDestination = "lobbyScreen",
-            isGame = false
         )
         Spacer(modifier = Modifier.padding(padding))
         NavButton(
@@ -168,7 +195,6 @@ fun UserMenu(navController: NavController) {
             text = "Find",
             isMainButton = false,
             onClickDestination = "findLobbyScreen",
-            isGame = false
         )
 
     }

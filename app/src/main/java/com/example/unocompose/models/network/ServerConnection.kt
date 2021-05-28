@@ -8,17 +8,18 @@ import io.ktor.network.sockets.*
 
 import io.ktor.utils.io.*
 import kotlinx.coroutines.*
+import java.util.concurrent.Executors
 
 //TODO remove string and network address kostyil'
 
-class ServerConnection() {
-    val counterContext = newSingleThreadContext("CounterContext")
+object ServerConnection  {
+    val coroutineContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher() + CoroutineName("Client data")
     var isSentCounter = 0
     var clientCount = 0
     val clientList = mutableListOf<String>()
     var gameStarted = false
 
-    var message = Message()
+    var message = Message("", "", "")
     var broadcastMessage = ""
 
     suspend fun startServer () {
@@ -39,11 +40,19 @@ class ServerConnection() {
                 val output = clientSocket.openWriteChannel(autoFlush = true)
                 // TODO notify all users broadcastMessage =
 
+
                 GlobalScope.launch{
                     try {
                         while(true) {
                             val receivedMessage = input.readUTF8Line()
                             Log.d("Server message listener", "${clientSocket.remoteAddress}: $receivedMessage")
+                            if (receivedMessage == null) {
+                                clientSocket.close()
+                            } else {
+                                // TODO
+                            }
+
+
                             //TODO message handler
                         }
                     } catch (e: Throwable) {
@@ -56,7 +65,8 @@ class ServerConnection() {
                     while(true) {
                         if (message.ip == clientSocket.remoteAddress.toString()){
                             output.writeStringUtf8(message.data)
-                            message = Message()
+                            output.writeStringUtf8("\n")
+                            message = Message("", "", "")
                             // TODO mb need to send Message as parameter
                             Log.d("Server message sender", "${clientSocket.remoteAddress}:  ${message.data}")
                         }
@@ -70,12 +80,8 @@ class ServerConnection() {
 
     }
 
-    fun sendMessage(dataToSend: String, ip: String) {
-        message = Message(data = dataToSend, ip = ip)
-    }
+//    fun sendMessage(dataToSend: String, ip: String) {
+//        message = Message(data = dataToSend, ip = ip, )
+//    }
 
 }
-
-
-
-data class LobbyEntry (val name: String, val userCount: String)

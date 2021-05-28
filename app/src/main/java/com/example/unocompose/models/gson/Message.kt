@@ -1,8 +1,11 @@
 package com.example.unocompose.models.gson
 
+import java.net.InetAddress
+
 data class Message(
-    val ip: String,
-    val data: String
+    var ip: String,
+    var data: String,
+    var type: String
 ) {
-    constructor() : this(ip = "", data = "")
+    constructor() : this(ip = "", data = "", type = "")
 }

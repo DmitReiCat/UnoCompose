@@ -3,6 +3,8 @@ package com.example.unocompose.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val textWhite = Color(0xFFFFFFFF)
+val textWelcome = Color(0xFFC47CE3)
+
 
 val cardCyan = Color(0xFF04849E)
 val cardPink = Color(0xFFD73E89)
@@ -12,3 +14,5 @@ val cardOrange = Color(0xFFFA6C22)
 val bgPrimary = Color(0xFF323232)
 val bgSecondary = Color(0xFF7B1FA2)
 val bgTransparent = Color(0xB2323232)
+
+val bgPrimary2 = Color(0xFF383838)

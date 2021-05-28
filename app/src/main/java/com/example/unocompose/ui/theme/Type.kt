@@ -44,7 +44,14 @@ val Typography = Typography(
                 color = textWhite,
                 fontWeight = FontWeight.Medium,
                 fontSize = 25.sp,
-        )
+        ),
+        h4 = TextStyle(
+                fontFamily = Nunito,
+                color = textWelcome,
+                fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
+        ),
+
 )
 @Preview
 @Composable

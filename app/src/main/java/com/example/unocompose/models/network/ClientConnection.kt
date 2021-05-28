@@ -1,7 +1,9 @@
 package com.example.unocompose.models.network
 
 import android.util.Log
+import com.example.unocompose.models.GameData
 import com.example.unocompose.models.gson.Message
+import com.google.gson.Gson
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.util.cio.*
@@ -13,7 +15,7 @@ import java.util.concurrent.Executors
 
 object ClientConnection {
     //    val availableLobbies = mutableSetOf(listOf())
-    val dataContext =
+    val coroutineContext =
         Executors.newSingleThreadExecutor().asCoroutineDispatcher() + CoroutineName("Client data")
     var data = ""
 
@@ -25,6 +27,7 @@ object ClientConnection {
         val input = serverSocket.openReadChannel()
         val output = serverSocket.openWriteChannel(autoFlush = true)
 
+
         GlobalScope.launch {
             try {
                 while (true) {
@@ -33,6 +36,7 @@ object ClientConnection {
                         "Client message listener",
                         "${serverSocket.remoteAddress}: $receivedMessage"
                     )
+
                     //TODO message handler
                 }
             } catch (e: Throwable) {
@@ -44,6 +48,7 @@ object ClientConnection {
             while (true) {
                 if (data != "") {
                     output.writeStringUtf8(data)
+                    output.writeStringUtf8("\n")
                     // TODO mb need to send Message as parameter
                     Log.d("Client message", "${serverSocket.remoteAddress}:  ${data}")
                     data = ""
@@ -53,20 +58,16 @@ object ClientConnection {
         }
     }
 
-    fun sendData(dataToSend: String) {
+    fun sendData(dataToSend: Message) {
         while (data != "") {
             continue
         }
-        data = dataToSend
-        Log.d("Client message sender", "data accepted= $dataToSend \n and written= $data")
+        var gson = Gson()
+        val newData = Message(ip = "", data = "Hello", type = "NameInit")
+        var jsonString = gson.toJson(dataToSend)
+        data = jsonString
     }
 
 
 }
-//    suspend fun sendMessage(message: String){
-//        output.writeStringUtf8("hello server!")
-//    }
-//    suspend fun acceptMessage(): String? {
-//        return(input.readUTF8Line())
-//    }
 

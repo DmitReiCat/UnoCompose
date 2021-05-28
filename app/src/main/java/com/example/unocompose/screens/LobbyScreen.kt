@@ -1,7 +1,7 @@
 package com.example.unocompose.screens
 
-import android.net.nsd.NsdManager
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -10,30 +10,29 @@ import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
-import com.example.unocompose.сomponents.NavButton
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
+import com.example.unocompose.models.gson.Message
 import com.example.unocompose.ui.theme.*
 import com.example.unocompose.viewmodels.LobbyScreenViewModel
-import com.example.unocompose.сomponents.ButtonToListen
-import com.example.unocompose.сomponents.ButtonToRegister
-
 
 
 @Composable
 fun LobbyScreen(
     navController: NavController,
-    nsdManager: NsdManager,
     isHost: Boolean,
-    viewModel: LobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: LobbyScreenViewModel = hiltNavGraphViewModel()
 ) {
     Surface(
         color = bgPrimary,
@@ -42,7 +41,8 @@ fun LobbyScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()) {
+            modifier = Modifier.fillMaxSize()
+        ) {
 
             /*Lobby Text*/
             Text(
@@ -62,22 +62,23 @@ fun LobbyScreen(
                 }
                 constrain(setting) {
                     start.linkTo(userList.end)
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
+                    top.linkTo(parent.top, margin = 30.dp)
+                    end.linkTo(parent.end, margin = 10.dp)
                 }
 
             }
 
-            ConstraintLayout(constraints, modifier = Modifier
-                .fillMaxSize()
-                ) {
+            ConstraintLayout(
+                constraints, modifier = Modifier
+                    .fillMaxSize()
+            ) {
 
                 /*UserList*/
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .background(cardCyan)
+//                        .background(cardCyan)
                         .layoutId("userList")
                 ) {
                     val visibleList by remember { viewModel.userListState }
@@ -90,28 +91,18 @@ fun LobbyScreen(
                         }
                     }
                 }
-                Button(onClick = { viewModel.send("Hello server") }) {
-
-                }
+                Button(onClick = { viewModel.send("nameInit") }) { }
 
                 /*Settings*/
                 if (isHost) {
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .background(cardOrange)
+//                            .background(cardOrange)
                             .layoutId("settings")
                     ) {
                         Column() {
-                            NavButton(
-                                navController = navController,
-                                text = "Start",
-                                isMainButton = true,
-                                onClickDestination = "gameScreen",
-                                isGame = true
-                            )
-                            ButtonToRegister(nsdManager = nsdManager)
-                            ButtonToListen(nsdManager = nsdManager)
+                            StartButton(navController = navController)
                         }
                     }
                 }
@@ -119,8 +110,6 @@ fun LobbyScreen(
         }
     }
 }
-
-
 
 
 @Composable
@@ -132,20 +121,44 @@ fun UserEntry(name: String) {
             .fillMaxHeight()
             .padding(end = 10.dp)
             .padding(vertical = 30.dp)
-            .background(cardPink, RoundedCornerShape(20.dp))
+            .background(bgPrimary2, RoundedCornerShape(20.dp))
     ) {
         Column() {
 
             Text(
-                text = "Player",
-                style = Typography.h3
-
-            )
-            Text(
                 text = name,
                 style = Typography.h3,
+                color = cardPink,
                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 5.dp)
             )
         }
+    }
+}
+
+@Composable
+fun StartButton(
+    navController: NavController,
+    viewModel: LobbyScreenViewModel = hiltNavGraphViewModel()
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(cardPink)
+            .wrapContentHeight()
+            .clickable {
+                viewModel.unregister()
+                navController.navigate("gameScreen") {
+
+                    popUpTo(route = "mainScreen") {}
+                }
+
+            }
+    ) {
+        Text(
+            text = "Start",
+            style = Typography.h1,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+        )
     }
 }

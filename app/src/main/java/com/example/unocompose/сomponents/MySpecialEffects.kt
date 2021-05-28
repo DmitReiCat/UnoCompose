@@ -63,6 +63,6 @@ fun ColorPicker(
                     viewModel.changeLastPlayedCard(Card("wild", "common_$renewColor"))
                 }
             }
-    ){
-    }
+    ){}
 }
+

@@ -11,6 +11,7 @@ import java.net.ServerSocket
 
 class NSDHost(
     private var nsdManager: NsdManager
+
 ) {
 
     init {
@@ -22,17 +23,14 @@ class NSDHost(
     var serviceName = ""
 
 
-    private val registrationListener = object : NsdManager.RegistrationListener {
+    val registrationListener = object : NsdManager.RegistrationListener {
         override fun onServiceRegistered(NsdServiceInfo: NsdServiceInfo) {
             // Save the service name. Android may have changed it in order to
             // resolve a conflict, so update the name you initially requested
             // with the name Android actually used.
             serviceName = NsdServiceInfo.serviceName
             Log.d(TAGNSD, "Service registered!, ${NsdServiceInfo.serviceName}, ${NsdServiceInfo.serviceType}")
-            GlobalScope.launch {
-                Log.d(TAG,"launching coroutine  ")
-                ServerConnection().startServer()
-            }
+
 
 
 
@@ -80,8 +78,8 @@ class NSDHost(
         val serviceInfo = NsdServiceInfo().apply {
             // The name is subject to change based on conflicts
             // with other services advertised on the same network.
-            serviceName = "NsdChat"
-            serviceType = "_nsdchat._tcp"
+            serviceName = "Uno Game"
+            serviceType = "_unoLocalGame._tcp"
             port = localPort
             Log.d(TAGNSD, "info created")
         }

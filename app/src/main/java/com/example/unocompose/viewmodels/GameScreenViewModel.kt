@@ -1,9 +1,12 @@
 package com.example.unocompose.viewmodels
 
+import android.os.Message
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.unocompose.models.GameData
 import com.example.unocompose.models.cards.Card
 import com.example.unocompose.models.cards.DeckOfCards
+import com.example.unocompose.models.network.MessageHandler
 
 class GameScreenViewModel: ViewModel() {
 
@@ -11,6 +14,30 @@ class GameScreenViewModel: ViewModel() {
     private val myCardsList = mutableListOf<Card>()
     private var lastPlayedCard = Card("pink","skip")
 //TODO server connection commands
+
+
+    private val isHost = GameData.isServer
+//    val messageHandler = if (isHost) {
+//        object : MessageHandler() {
+//            override fun send(message: Message) {
+//
+//            }
+//
+//            override fun recieve(message: Message) {
+//
+//            }
+//        }
+//    } else {
+//        object : MessageHandler() {
+//            override fun send(message: Message) {
+//
+//            }
+//
+//            override fun recieve(message: Message) {
+//                serialize()
+//            }
+//        }
+//    }
 
 
 //    val lastPlayedCards: Queue<String> = LinkedList<String>(listOf("orange_3", "purple_reverse", "pink_skip"))

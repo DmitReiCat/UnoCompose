@@ -15,9 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.popUpTo
+import com.example.unocompose.models.GameData
 import com.example.unocompose.ui.theme.Typography
 import com.example.unocompose.ui.theme.cardPurple
 import com.example.unocompose.ui.theme.cardPink
@@ -31,7 +33,6 @@ fun NavButton(
     text: String,
     isMainButton: Boolean,
     onClickDestination: String,
-    isGame: Boolean
 ) {
     val textStyle = if (isMainButton) Typography.h1
     else Typography.h2
@@ -46,9 +47,8 @@ fun NavButton(
             .background(boxColor)
             .wrapContentHeight()
             .clickable {
-                navController.navigate(onClickDestination) {
-                    if (isGame) {
-                        popUpTo(route = "mainScreen") {}
+                if (GameData.myName.isNotBlank()) {
+                    navController.navigate(onClickDestination) {
                     }
                 }
             }
@@ -64,14 +64,13 @@ fun NavButton(
 
 @Composable
 fun ButtonToRegister(
-    nsdManager: NsdManager,
-    viewModel: FindLobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    nsdManager: NsdManager
 ) {
     val composableScope = rememberCoroutineScope()
     Button(
         onClick = {
             composableScope.launch {
-                viewModel.openOnNetwork(nsdManager)
+//                viewModel.openOnNetwork(nsdManager)
             }
         }
     ) {
@@ -85,14 +84,16 @@ fun ButtonToRegister(
 @Composable
 fun ButtonToListen(
     nsdManager: NsdManager,
-    viewModel: FindLobbyScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val composableScope = rememberCoroutineScope()
     Button(
         onClick = {
+
             composableScope.launch {
-                viewModel.findLobby(nsdManager)
+//                viewModel.findLobby(nsdManager)
             }
+
+
         }
     ) {
         Text(

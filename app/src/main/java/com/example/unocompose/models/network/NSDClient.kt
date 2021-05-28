@@ -15,7 +15,7 @@ class NSDClient(
 
     suspend fun startDiscovery() {
         GlobalScope.launch {
-            nsdManager.discoverServices("_nsdchat._tcp", NsdManager.PROTOCOL_DNS_SD, NsdListener())
+            nsdManager.discoverServices("_unoLocalGame._tcp", NsdManager.PROTOCOL_DNS_SD, listener)
         }
 
     }
@@ -48,7 +48,7 @@ class NSDClient(
 //            }
     }
 
-    inner class NsdListener : NsdManager.DiscoveryListener {
+    val listener = object : NsdManager.DiscoveryListener {
         override fun onServiceFound(serviceInfo: NsdServiceInfo?) {
             Log.d(TAG, "service found")
             nsdManager.resolveService(serviceInfo, NsdResolveListener())
